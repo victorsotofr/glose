@@ -15,7 +15,7 @@ struct ReaderCanvas: View {
                     Rectangle().fill(Theme.rule).frame(width: 1)
                 }
                 ZStack {
-                    PDFContainer(view: state.pdfView)
+                    PDFContainer(view: state.pdfView, hidden: state.screen != .reader)
                     VStack(spacing: 0) {
                         if let bar = state.topBar {
                             TopBarView(mode: bar)
@@ -77,6 +77,7 @@ struct ReaderSidebar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .clickable()
                 .help(state.sidebarPinned ? "Unpin: show on hover at the left edge (⌥⌘S)" : "Keep the sidebar open (⌥⌘S)")
             }
             .padding(.horizontal, 14)
@@ -111,6 +112,7 @@ private struct SidebarTabButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .clickable()
         .padding(.top, 6)
     }
 }
@@ -195,6 +197,7 @@ private struct ContentsRow: View {
         }
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
+        .clickable()
         .onTapGesture { state.go(to: item) }
     }
 }
@@ -239,6 +242,7 @@ private struct FoundRow: View {
         .background(isCurrent ? Theme.rule.opacity(0.7) : hovering ? Theme.rule.opacity(0.4) : .clear)
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
+        .clickable()
         .onTapGesture { state.showMatch(result.id) }
     }
 
@@ -334,6 +338,7 @@ private struct PageIndicator: View {
             }
             .buttonStyle(.plain)
             .onHover { hovering = $0 }
+            .clickable()
             .help("Go to page (⌥⌘G)")
         }
     }

@@ -3,6 +3,7 @@
 Native macOS PDF reader with an English→French side panel. Opens on a library (Books grid with covers and progress, Words tab with every saved word); ⌘L switches between library and reader. Double-click a word (or select a phrase) and the panel shows its translation, the sentence it sits in (plus that sentence translated), and the macOS dictionary definition. Saved words are highlighted in the book and exportable as CSV.
 
 ## Rules
+- **Ink-only design.** Monospace, greyscale (`Theme.swift`): emphasis comes from weight, not colour, so the panel never outshines the page. The only colour is the transient yellow find highlight. Clickable views use `.clickable()` (pointing hand).
 - **Offline only.** Translation is Apple's on-device `Translation` framework (en→fr pack, downloaded once). No network APIs, no API keys.
 - **Glose reads its own copy.** Adding a book copies it to `Books/<bookID>.pdf`; removing one trashes that copy only, never the original.
 - **Never write the PDF.** Highlights are in-memory `PDFAnnotation`s redrawn on open; never call `PDFDocument.write`.
@@ -20,7 +21,7 @@ Native macOS PDF reader with an English→French side panel. Opens on a library 
 scripts/build.sh            # build/Glose.app
 scripts/build.sh --install  # + /Applications/Glose.app
 scripts/build.sh --test     # GloseCore tests (plain assertion runner in Tests/main.swift)
-scripts/make-icon.sh        # regenerate Resources/AppIcon.icns (deep blue, white mono "g")
+scripts/make-icon.sh        # regenerate Resources/AppIcon.icns (near-black, white mono "g")
 ```
 `scripts/toolchain-fix/` hides a stale `usr/include/swift/module.modulemap` that some CLT upgrades leave behind (it redefines `SwiftBridging`) through a VFS overlay; on a clean toolchain the overlay is harmless.
 

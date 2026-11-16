@@ -58,6 +58,7 @@ private struct TabButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .clickable()
         .padding(.top, 7)
     }
 }
@@ -85,6 +86,7 @@ private struct BooksGrid: View {
                         BookCard(book: book, isCurrent: book.id == state.book?.id,
                                  isMissing: state.missing.contains(book.id),
                                  words: state.library.wordCount(for: book.id))
+                            .clickable()
                             .onTapGesture { state.read(book.id) }
                             .contextMenu {
                                 Button("Read") { state.read(book.id) }
@@ -143,7 +145,7 @@ private struct BookCard: View {
             .frame(height: 240)
             .frame(maxWidth: .infinity)
             .clipped()
-            .overlay(Rectangle().stroke(hovering ? Theme.accent : Theme.rule, lineWidth: 1))
+            .overlay(Rectangle().stroke(hovering ? Theme.fg : Theme.rule, lineWidth: 1))
             .padding(.bottom, 4)
 
             if isCurrent {
@@ -288,7 +290,7 @@ private struct WordRow: View {
         HStack(alignment: .firstTextBaseline, spacing: 20) {
             Text(entry.word).font(Theme.mono(13, .medium)).foregroundStyle(Theme.fg)
                 .frame(width: 190, alignment: .leading)
-            Text(entry.translation).font(Theme.mono(12)).foregroundStyle(Theme.accent)
+            Text(entry.translation).font(Theme.mono(12, .semibold)).foregroundStyle(Theme.fg)
                 .frame(width: 190, alignment: .leading)
             Text(entry.sentence ?? "").font(Theme.mono(11)).foregroundStyle(Theme.muted)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -305,6 +307,7 @@ private struct WordRow: View {
         .background(hovering ? Theme.rule.opacity(0.45) : .clear)
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
+        .clickable()
         .onTapGesture { if state.library.books[entry.bookID] != nil { state.read(entry.bookID, at: entry) } }
         .contextMenu {
             if state.library.books[entry.bookID] != nil {
@@ -328,5 +331,6 @@ private struct ToggleChipStyle: ButtonStyle {
             .background(active ? Theme.fg : .clear)
             .overlay(Rectangle().stroke(active ? Theme.fg : Theme.rule, lineWidth: 1))
             .contentShape(Rectangle())
+            .clickable()
     }
 }

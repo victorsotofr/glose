@@ -1,8 +1,8 @@
-// Draws Resources/AppIcon.icns: flat deep-blue macOS rounded square with a white mono "g".
+// Draws Resources/AppIcon.icns: flat near-black macOS rounded square with a white mono "g".
 // Run: scripts/make-icon.sh
 import AppKit
 
-let blue = NSColor(srgbRed: 0x1A / 255, green: 0x3F / 255, blue: 0xD1 / 255, alpha: 1)
+let ink = NSColor(srgbRed: 0x14 / 255, green: 0x14 / 255, blue: 0x14 / 255, alpha: 1)
 let out = URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true)
 try? FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
 
@@ -15,7 +15,7 @@ func render(_ px: Int) -> Data {
     let s = CGFloat(px) / 1024
     // Apple grid: 824×824 body centred on 1024, radius ≈ 185.
     let body = NSRect(x: 100 * s, y: 100 * s, width: 824 * s, height: 824 * s)
-    blue.setFill()
+    ink.setFill()
     NSBezierPath(roundedRect: body, xRadius: 185 * s, yRadius: 185 * s).fill()
 
     let font = NSFont.monospacedSystemFont(ofSize: 560 * s, weight: .bold)

@@ -14,7 +14,7 @@ struct ReaderView: View {
                 ReaderCanvas()
                 if state.panelVisible {
                     Rectangle().fill(Theme.rule).frame(width: 1)
-                    SidePanel().frame(width: 280)
+                    SidePanel().frame(width: 310)
                 }
             }
             if state.screen != .reader || state.book == nil {
@@ -42,6 +42,8 @@ struct ReaderView: View {
 
 struct PDFContainer: NSViewRepresentable {
     let view: PDFView
+    /// Hidden under the library so its I-beam cursor rects don't leak through the overlay.
+    var hidden = false
     func makeNSView(context: Context) -> PDFView { view }
-    func updateNSView(_ nsView: PDFView, context: Context) {}
+    func updateNSView(_ nsView: PDFView, context: Context) { nsView.isHidden = hidden }
 }

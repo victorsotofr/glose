@@ -3,18 +3,19 @@ import SwiftUI
 
 enum Theme {
     static let bg = dynamic(light: 0xFFFFFF, dark: 0x0B0B0B)
-    static let panel = dynamic(light: 0xFAFAFA, dark: 0x111111)
-    static let fg = dynamic(light: 0x0A0A0A, dark: 0xEDEDED)
-    static let muted = dynamic(light: 0x6B6B6B, dark: 0x8A8A8A)
+    static let panel = dynamic(light: 0xF7F7F7, dark: 0x121212)
+    static let fg = dynamic(light: 0x111111, dark: 0xE8E8E8)
+    static let muted = dynamic(light: 0x707070, dark: 0x8C8C8C)
     static let rule = dynamic(light: 0xDDDDDD, dark: 0x2A2A2A)
-    static let accent = dynamic(light: 0x2456E8, dark: 0x5B9DFF)
+    /// Ink: emphasis comes from weight, not colour, so the panel never outshines the page.
+    static let accent = dynamic(light: 0x111111, dark: 0xE8E8E8)
     static let canvas = NSColor(name: nil) { $0.isDark ? NSColor(hex: 0x1A1A1A) : NSColor(hex: 0xE9E9E9) }
     static let highlight = NSColor(name: nil) {
-        $0.isDark ? NSColor(hex: 0x5B9DFF, alpha: 0.35) : NSColor(hex: 0x2456E8, alpha: 0.22)
+        $0.isDark ? NSColor(hex: 0xFFFFFF, alpha: 0.22) : NSColor(hex: 0x000000, alpha: 0.14)
     }
 
     static let findHighlight = NSColor(name: nil) {
-        $0.isDark ? NSColor(hex: 0xFFD60A, alpha: 0.35) : NSColor(hex: 0xFFD60A, alpha: 0.45)
+        $0.isDark ? NSColor(hex: 0xFFD60A, alpha: 0.35) : NSColor(hex: 0xFFD60A, alpha: 0.35)
     }
 
     static func mono(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
@@ -62,22 +63,28 @@ struct DashedRule: View {
     }
 }
 
-/// `[ LABEL ]` flat button; inverts while pressed.
+extension View {
+    /// Pointing-hand cursor for anything clickable.
+    func clickable() -> some View { pointerStyle(.link) }
+}
+
+/// `[ LABEL ]` flat button; prominent ones are filled with ink. Inverts while pressed.
 struct BracketButtonStyle: ButtonStyle {
     var prominent = false
     @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
-        let tint = prominent ? Theme.accent : Theme.fg
+        let filled = prominent != configuration.isPressed
         configuration.label
             .font(Theme.mono(11, .medium))
             .tracking(0.5)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .foregroundStyle(configuration.isPressed ? Theme.bg : tint)
-            .background(configuration.isPressed ? tint : .clear)
-            .overlay(Rectangle().stroke(tint, lineWidth: 1))
+            .foregroundStyle(filled ? Theme.bg : Theme.fg)
+            .background(filled ? Theme.fg : .clear)
+            .overlay(Rectangle().stroke(Theme.fg, lineWidth: 1))
             .opacity(isEnabled ? 1 : 0.4)
             .contentShape(Rectangle())
+            .clickable()
     }
 }
