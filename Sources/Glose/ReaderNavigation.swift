@@ -317,29 +317,53 @@ private struct TopBarView: View {
 private struct PageIndicator: View {
     @Environment(AppState.self) private var state
     @State private var hovering = false
+    @State private var editing = false
+    @State private var input = ""
+    @FocusState private var focused: Bool
 
     var body: some View {
         if state.book != nil, state.pageCount > 0 {
-            Button { state.showGoToPage() } label: {
-                HStack(spacing: 8) {
+            let large = hovering || editing
+            HStack(spacing: 8) {
+                if editing {
+                    TextField("", text: $input)
+                        .textFieldStyle(.plain)
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: CGFloat(max(String(state.pageCount).count, 2)) * 9 + 6)
+                        .focused($focused)
+                        .onSubmit { state.goToPage(input); editing = false }
+                        .onExitCommand { editing = false }
+                        .onChange(of: focused) { _, isFocused in if !isFocused { editing = false } }
+                        .padding(.horizontal, 2)
+                        .overlay(Rectangle().stroke(Theme.fg, lineWidth: 1))
+                    Text("/ \(state.pageCount)")
+                } else {
                     Text("\(state.currentPageIndex + 1) / \(state.pageCount)")
-                    if let chapter = state.currentChapter {
-                        Text("·")
-                        Text(chapter.label).lineLimit(1).frame(maxWidth: 320)
-                    }
                 }
-                .font(Theme.mono(10))
-                .foregroundStyle(hovering ? Theme.fg : Theme.muted)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(Theme.panel.opacity(0.92))
-                .overlay(Rectangle().stroke(Theme.rule, lineWidth: 1))
-                .fixedSize()
+                if let chapter = state.currentChapter {
+                    Text("·")
+                    Text(chapter.label).lineLimit(1).frame(maxWidth: large ? 440 : 320)
+                }
             }
-            .buttonStyle(.plain)
+            .font(Theme.mono(large ? 14 : 11, large ? .medium : .regular))
+            .foregroundStyle(large ? Theme.fg : Theme.muted)
+            .padding(.horizontal, large ? 14 : 10)
+            .padding(.vertical, large ? 9 : 5)
+            .background(Theme.panel.opacity(large ? 0.98 : 0.92))
+            .overlay(Rectangle().stroke(large ? Theme.fg.opacity(0.35) : Theme.rule, lineWidth: 1))
+            .fixedSize()
+            .contentShape(Rectangle())
+            .animation(.easeOut(duration: 0.12), value: large)
             .onHover { hovering = $0 }
             .clickable()
-            .help("Go to page (⌥⌘G)")
+            .onTapGesture { if !editing { startEditing() } }
+            .help("Click to type a page number (⌥⌘G)")
         }
+    }
+
+    private func startEditing() {
+        input = "\(state.currentPageIndex + 1)"
+        editing = true
+        DispatchQueue.main.async { focused = true }
     }
 }

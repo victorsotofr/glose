@@ -80,7 +80,7 @@ private struct BooksGrid: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 170, maximum: 210), spacing: 32, alignment: .top)],
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 190, maximum: 230), spacing: 32, alignment: .top)],
                           alignment: .leading, spacing: 40) {
                     ForEach(books) { book in
                         BookCard(book: book, isCurrent: book.id == state.book?.id,
@@ -149,26 +149,26 @@ private struct BookCard: View {
             .padding(.bottom, 4)
 
             if isCurrent {
-                Text("CONTINUE").font(Theme.mono(9, .semibold)).tracking(1).foregroundStyle(Theme.accent)
+                Text("CONTINUE").font(Theme.mono(11, .semibold)).tracking(1).foregroundStyle(Theme.accent)
             }
             Text(name.title)
-                .font(Theme.mono(12, .semibold))
+                .font(Theme.mono(15, .semibold))
                 .foregroundStyle(Theme.fg)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
             if let byline = name.byline {
-                Text(byline).font(Theme.mono(10)).foregroundStyle(Theme.muted).lineLimit(1)
+                Text(byline).font(Theme.mono(13)).foregroundStyle(Theme.muted).lineLimit(1)
             }
             HStack {
                 Text(book.pageCount > 0 ? "p.\(book.lastPage + 1) / \(book.pageCount)" : "p.\(book.lastPage + 1)")
                 Spacer()
                 Text("\(Int((book.progress * 100).rounded()))%")
             }
-            .font(Theme.mono(10))
+            .font(Theme.mono(13))
             .foregroundStyle(Theme.muted)
             .padding(.top, 2)
             SquaresBar(progress: book.progress)
-            Text(words == 1 ? "1 word" : "\(words) words").font(Theme.mono(10)).foregroundStyle(Theme.muted)
+            Text(words == 1 ? "1 word" : "\(words) words").font(Theme.mono(13)).foregroundStyle(Theme.muted)
         }
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
